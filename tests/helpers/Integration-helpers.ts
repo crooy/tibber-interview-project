@@ -14,7 +14,7 @@ export default class IntegrationHelpers {
         if (this.appInstance) {
             return this.appInstance;
         }
-        const env: Environment = new Environment(Environments.TEST);
+        const env: Environment = new Environment(Environments.LOCAL);
         setGlobalEnvironment(env);
         const app: App = new App();
         await app.init();

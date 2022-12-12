@@ -47,13 +47,13 @@ export default class App {
 			express.urlencoded({ limit: '100mb', extended: true }),
 		);
 		// add multiple cors options as per your use
-		const corsOptions = {
-			origin: [
-				'http://localhost:5000/',
-				'http://127.0.0.1:5000',
-			],
-		};
-		this.express.use(cors(corsOptions));
+		// const corsOptions = {
+		// 	origin: [
+		// 		'http://localhost:5000/',
+		// 		'http://127.0.0.1:5000',
+		// 	],
+		// };
+		// this.express.use(cors(corsOptions));
 	}
 
 }

@@ -6,7 +6,9 @@ import handleCommand from '../lib/CleaningBot';
 import { CommandResult } from '../lib/CleaningBot.types';
 import insertRecord from '../lib/CleaningBotLogTable';
 import { CleaningBotRecord } from '../lib/CleaningBotLogTable.types';
+import logger from '../lib/logger';
 import { EnterActionBodySchema, EnterActionRequest, Marks } from './CleaningBotController.types';
+
 
 export default class CleaningBotController extends BaseApi {
   /**
@@ -26,8 +28,7 @@ export default class CleaningBotController extends BaseApi {
   }
 
   public rootGetAction = (req: Request,
-    res: Response,
-    next: NextFunction,
+    res: Response
   ): void => {
     res.locals.data = { message: 'Welcome to the Cleaning Bot API' };
     super.send(res);
@@ -66,7 +67,8 @@ export default class CleaningBotController extends BaseApi {
   };
 
   private storeCleaningBotRecord(record: CommandResult, duration: number): Promise<CleaningBotRecord> {
-    if (environment.isDevEnvironment() || environment.isTestEnvironment()) {
+    if (environment.isDevEnvironment()) {
+      logger.info('DEV ENVIRONMENT: Not storing record in database. Returning mock record instead.');
       return Promise.resolve({ ...record, duration, id: 123, timestamp: new Date().toISOString() });
     }
     // store record in database

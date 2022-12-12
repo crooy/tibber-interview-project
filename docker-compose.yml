@@ -1,11 +1,25 @@
-version: '3.8'
+version: '3'
 
 services:
     dev:
       build: .
       command: npm start
+      env_file:
+        - .env.test
       volumes:
         - .:/usr/app/
         - /usr/app/node_modules
       ports:
         - "5000:5000"
+    database:
+      image: postgres
+      restart: always
+      env_file:
+        - .env.test
+      ports:
+        - "5432:5432"
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+volumes:
+  pgdata:
