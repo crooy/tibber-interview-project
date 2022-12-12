@@ -40,8 +40,7 @@ describe('status integration tests', () => {
             }, {
                 direction: 'west',
                 steps: 10
-            }
-                , {
+            }, {
                 direction: 'south',
                 steps: 10
             }]
@@ -56,8 +55,8 @@ describe('status integration tests', () => {
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect((res: request.Response) => {
 
-                expect(res.body.result).toBe(5);
-                expect(res.body.command).toBe(4);
+                expect(res.body.record.result).toBe(3);
+                expect(res.body.record.commands).toBe(4);
 
                 // eslint-disable-next-line no-console
                 console.log(res.text);

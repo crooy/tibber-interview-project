@@ -5,3 +5,10 @@ export interface CleaningBotRecord{
   result: number;
   duration: number;
 }
+
+
+export interface CleaningBotNewRecord{
+  commands: number;
+  result: number;
+  duration: number;
+}
