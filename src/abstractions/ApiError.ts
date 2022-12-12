@@ -1,3 +1,9 @@
+
+export interface JSONValidationError {
+	name:'JsonSchemaValidation';
+	validations: unknown;
+}
+
 export interface IError {
 	status: number;
 	fields: {
@@ -8,6 +14,7 @@ export interface IError {
 	message: string;
 	name: string;
 }
+
 
 class ApiError extends Error implements IError {
 	public status = 500;
@@ -25,3 +32,4 @@ class ApiError extends Error implements IError {
 }
 
 export default ApiError;
+export type AnyError = ApiError | JSONValidationError;

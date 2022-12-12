@@ -1,8 +1,9 @@
 import http from 'http';
 import cors from 'cors';
-import express, { NextFunction } from 'express';
+import express from 'express';
 import helmet from 'helmet';
 import addErrorHandler from './middleware/error-handler';
+import addPerformance from './middleware/performance';
 import registerRoutes from './routes';
 
 export default class App {
@@ -28,7 +29,6 @@ export default class App {
 	 * here register your all routes
 	 */
 	private routes(): void {
-		this.express.get('/web', this.parseRequestHeader);
 		this.express.use('/', registerRoutes());
 	}
 
@@ -36,6 +36,8 @@ export default class App {
 	 * here you can apply your middlewares
 	 */
 	private middleware(): void {
+		// add performance middleware
+		this.express.use(addPerformance);
 		// support application/json type post data
 		// support application/x-www-form-urlencoded post data
 		// Helmet can help protect your app from some well-known web vulnerabilities by setting HTTP headers appropriately.
@@ -53,16 +55,5 @@ export default class App {
 		};
 		this.express.use(cors(corsOptions));
 	}
-
-	private parseRequestHeader(
-		req: express.Request,
-		res: express.Response,
-		next: NextFunction,
-	): void {
-		// parse request header
-		// console.log(req.headers.access_token);
-		next();
-	}
-
 
 }

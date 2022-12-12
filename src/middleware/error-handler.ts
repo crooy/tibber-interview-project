@@ -1,17 +1,23 @@
 import * as util from 'util';
 import * as express from 'express';
 import { StatusCodes } from 'http-status-codes';
-import ApiError from '../abstractions/ApiError';
-import Crypto from '../lib/crypto';
+import ApiError, { AnyError } from '../abstractions/ApiError';
 import logger from '../lib/logger';
 
 const addErrorHandler = (
-	err: ApiError,
+	err: any,
 	req: express.Request,
 	res: express.Response,
 	next: express.NextFunction,
 ): void => {
-	if (err) {
+	if (err.name === 'JsonSchemaValidation') {
+		res.status(400);
+		res.json({
+			statusText: 'Bad Request',
+			jsonSchemaValidation: true,
+			validations: err.validations
+		});
+	} else {
 		const status: number = err.status || StatusCodes.INTERNAL_SERVER_ERROR;
 		logger.debug(`REQUEST HANDLING ERROR:
         \nERROR:\n${JSON.stringify(err)}
@@ -20,7 +26,7 @@ const addErrorHandler = (
         \nREQUEST QUERY:\n${util.inspect(req.query)}
         \nBODY:\n${util.inspect(req.body)}`);
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		let body: any = {
+		const body: any = {
 			fields: err.fields,
 			message: err.message || 'An error occurred during the request.',
 			name: err.name,
@@ -31,9 +37,6 @@ const addErrorHandler = (
 		// If the environment is production then no need to send error stack trace
 		if (environment && environment.isDevEnvironment()) {
 			body.stack = err.stack;
-		}
-		if (environment && environment.applyEncryption) {
-			body = Crypto.encrypt(JSON.stringify(body), environment.secretKey);
 		}
 		res.status(status);
 		res.send(body);

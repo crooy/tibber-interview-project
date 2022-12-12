@@ -16,7 +16,7 @@ describe('status integration tests', () => {
 
     it('can get default route success', async () => {
         await request(app)
-            .get('/')
+            .get('/tibber-developer-test')
             .set('Accept', 'application/json')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect((res: request.Response) => {
@@ -26,15 +26,41 @@ describe('status integration tests', () => {
             .expect(StatusCodes.OK);
     });
 
-    it('can get default web route success', async () => {
+    it('can post commands', async () => {
+        const given = {
+            start: {
+                x: -10, y: -10
+            },
+            commands: [{
+                direction: 'north',
+                steps: 10
+            }, {
+                direction: 'east',
+                steps: 10
+            }, {
+                direction: 'west',
+                steps: 10
+            }
+                , {
+                direction: 'south',
+                steps: 10
+            }]
+        };
+
         await request(app)
-            .get('/web')
+            .post('/tibber-developer-test/enter-path')
             .set('Accept', 'application/json')
+            .send(given)
+
+            .expect(StatusCodes.OK)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect((res: request.Response) => {
+
+                expect(res.body.result).toBe(5);
+                expect(res.body.command).toBe(4);
+
                 // eslint-disable-next-line no-console
                 console.log(res.text);
-            })
-            .expect(StatusCodes.OK);
+            });
     });
 });
